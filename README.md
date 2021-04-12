@@ -8,4 +8,4 @@
 
 ## Run
 
-https://ernoviitanen-lut.github.io/au-pathfinding/index.html
+https://ernoviitanen-lut.github.io/ai-pathfinding/
