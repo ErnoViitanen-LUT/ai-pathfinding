@@ -11,6 +11,7 @@ public class Pathfinding
     private List<PathNode> closedList;
     public Pathfinding(int width, int height)
     {
+        //Provide a constructor for creating a pathnode for each grid node
         grid = new SimpleGrid<PathNode>(width, height, 1f, (SimpleGrid<PathNode> g, int x, int y) => new PathNode(g, x, y));
     }
 
@@ -30,6 +31,7 @@ public class Pathfinding
         PathNode endNode = grid.GetGridObject(endX, endY);
         openList = new List<PathNode> { startNode };
         closedList = new List<PathNode>();
+
         for (int x = 0; x < grid.GetWidth(); x++)
         {
             for (int y = 0; y < grid.GetHeight(); y++)

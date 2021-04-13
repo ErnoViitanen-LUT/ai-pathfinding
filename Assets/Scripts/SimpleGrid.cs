@@ -15,6 +15,7 @@ public class SimpleGrid<TGridObject>
     private int offset_y; // world-space y-offset
     private TGridObject[,] gridArray; // grid values
 
+    /* The Func is a constructor that takes a grid (in this case this very object), and x and y)*/
     public SimpleGrid(int width, int height, float cellSize, Func<SimpleGrid<TGridObject>, int, int, TGridObject> createGridObject, int offset_x = 0, int offset_y = 0)
     {
         this.width = width;
@@ -29,6 +30,7 @@ public class SimpleGrid<TGridObject>
         {
             for (int y = 0; y < gridArray.GetLength(1); y++)
             {
+                //create an array of gridObjects with the constructor provided in this class' constructor.
                 gridArray[x, y] = createGridObject(this, x, y);
                 Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x + 1, y), Color.white, 100f);
                 Debug.DrawLine(GetWorldPosition(x, y), GetWorldPosition(x, y + 1), Color.white, 100f);
@@ -43,7 +45,6 @@ public class SimpleGrid<TGridObject>
         return new Vector3(x, y) * cellSize + new Vector3(offset_x, offset_y);
     }
 
-    // maybe change to public later?
     public void SetGridObject(int x, int y, TGridObject gridObject)
     {
         if (x >= 0 && y >= 0 && x < width && y < height)
