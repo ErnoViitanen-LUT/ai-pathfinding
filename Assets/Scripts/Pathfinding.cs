@@ -11,11 +11,11 @@ public class Pathfinding
     private SimpleGrid<PathNode> grid;
     private List<PathNode> openList;
     private List<PathNode> closedList;
-    public Pathfinding(int width, int height)
+    public Pathfinding(int width, int height, float cellSize)
     {
         Instance = this;
         //Provide a constructor for creating a pathnode for each grid node
-        grid = new SimpleGrid<PathNode>(width, height, 1f, (SimpleGrid<PathNode> g, int x, int y) => new PathNode(g, x, y));
+        grid = new SimpleGrid<PathNode>(width, height, cellSize, (SimpleGrid<PathNode> g, int x, int y) => new PathNode(g, x, y));
     }
 
     public SimpleGrid<PathNode> GetGrid()
