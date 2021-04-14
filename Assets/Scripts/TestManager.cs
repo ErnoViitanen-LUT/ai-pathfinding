@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class TestManager : MonoBehaviour
 {
@@ -13,9 +14,16 @@ public class TestManager : MonoBehaviour
     private int gridx;
     private int gridy;
     private float cellSize = 0.75f;
+    [SerializeField] private MapData map;
+    private GameObject[,] goArray;
 
     private SimpleGrid<PathNode> grid;
-    private GameObject[,] goArray;
+
+    [System.Serializable]
+    public class MapData
+    {
+        public List<int> grid;
+    }
     void Start()
     {
         gridy = gridSize[0];
@@ -23,6 +31,8 @@ public class TestManager : MonoBehaviour
         pathfinding = new Pathfinding(gridx, gridy, cellSize);
         grid = pathfinding.GetGrid();
 
+        map = new MapData();
+        map.grid = new List<int>();
         goArray = new GameObject[gridx, gridy];
 
         player.transform.position = grid.GetWorldPosition(0, 0) + Vector3.one * cellSize * 0.5f;
@@ -37,6 +47,7 @@ public class TestManager : MonoBehaviour
 
                 GameObject square = Instantiate(squarePrefab, dd, Quaternion.identity);
                 square.transform.localScale = new Vector3(cellSize - borderSize[0], cellSize - borderSize[1]);
+                square.name = "square " + x + "-" + y;
                 //square.SetActive(false);
                 goArray[x, y] = square;
 
@@ -50,15 +61,6 @@ public class TestManager : MonoBehaviour
             Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pathfinding.GetGrid().GetGridPosition(mouseWorldPosition, out int x, out int y);
             Debug.Log("loppupiste: (" + x + "," + y + ")");
-            List<PathNode> path = pathfinding.FindPath(0, 0, x, y);
-            if (path != null)
-            {
-                for (int i = 0; i < path.Count - 1; i++)
-                {
-                    Debug.Log("path " + i + ": " + path[i].x + ", " + path[i].y);
-                    //Debug.DrawLine(new Vector3(path[i].x, path[i].y) + Vector3.one * 0.5f, new Vector3(path[i + 1].x, path[i + 1].y) + Vector3.one * 0.5f, Color.green, 10f);
-                }
-            }
             playerPathfindingHandler.SetTargetPosition(mouseWorldPosition);
 
         }
@@ -70,5 +72,46 @@ public class TestManager : MonoBehaviour
             goArray[x, y].SetActive(pathfinding.ToggleNode(x, y));
 
         }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            SaveIntoJson();
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadFromJson();
+        }
+    }
+
+    public void LoadFromJson()
+    {
+        string mapJson = System.IO.File.ReadAllText(Application.persistentDataPath + "/map.json");
+        map = JsonUtility.FromJson<MapData>(mapJson);
+
+
+        for (int x = 0; x < goArray.GetLength(0); x++)
+        {
+            for (int y = 0; y < goArray.GetLength(1); y++)
+            {
+
+                goArray[x, y].SetActive(Convert.ToBoolean(map.grid[x + y]));
+            }
+        }
+        Debug.Log("Loading... " + Application.persistentDataPath + "/map.json");
+    }
+    public void SaveIntoJson()
+    {
+        map.grid = new List<int>();
+        for (int x = 0; x < goArray.GetLength(0); x++)
+        {
+            for (int y = 0; y < goArray.GetLength(1); y++)
+            {
+                map.grid.Add(Convert.ToInt32(goArray[x, y].activeSelf));
+            }
+        }
+
+        string mapJson = JsonUtility.ToJson(map);
+        System.IO.File.WriteAllText(Application.persistentDataPath + "/map.json", mapJson);
+        Debug.Log("Saving... " + Application.persistentDataPath + "/map.json");
     }
 }
