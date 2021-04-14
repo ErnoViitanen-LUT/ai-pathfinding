@@ -331,6 +331,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPathfindingHandler: {fileID: 265235581}
+  squarePrefab: {fileID: 339173249895411073, guid: d3ca1472d32154772898592521b418fb, type: 3}
 --- !u!4 &1847214538
 Transform:
   m_ObjectHideFlags: 0

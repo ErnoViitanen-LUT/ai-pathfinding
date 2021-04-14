@@ -23,9 +23,9 @@ public class Pathfinding
         return grid;
     }
 
-    public void ToggleNode(int x, int y)
+    public bool ToggleNode(int x, int y)
     {
-        GetNode(x, y).ToggleWalkability();
+        return GetNode(x, y).ToggleWalkability();
     }
 
     public List<Vector3> FindPath(Vector3 startWorldPosition, Vector3 endWorldPosition)
@@ -131,14 +131,14 @@ public class Pathfinding
         if (currentNode.x - 1 >= 0)
         {
             neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y)); // left
-            if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y - 1)); // bottom-left 
-            if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y + 1)); // upper-right 
+            //if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y - 1)); // bottom-left 
+            //if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y + 1)); // upper-right 
         }
         if (currentNode.x + 1 < grid.GetWidth())
         {
             neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y)); // right
-            if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y - 1)); // bottom-right
-            if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y + 1)); // upper-right
+            //if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y - 1)); // bottom-right
+            //if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y + 1)); // upper-right
         }
         if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x, currentNode.y - 1)); // bottom
         if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x, currentNode.y + 1)); // top

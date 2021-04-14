@@ -5,15 +5,37 @@ using UnityEngine;
 public class TestManager : MonoBehaviour
 {
     public PlayerPathfindingHandler playerPathfindingHandler;
+    public GameObject squarePrefab;
     private Pathfinding pathfinding;
     private int gridx = 12;
     private int gridy = 12;
     private float cellSize = 0.75f;
+
+    private SimpleGrid<PathNode> grid;
+    private GameObject[,] goArray;
     void Start()
     {
         pathfinding = new Pathfinding(gridx, gridy, cellSize);
-    }
+        grid = pathfinding.GetGrid();
 
+        goArray = new GameObject[gridx, gridy];
+
+        for (int x = 0; x < goArray.GetLength(0); x++)
+        {
+            for (int y = 0; y < goArray.GetLength(1); y++)
+            {
+                //create an array of gridObjects with the constructor provided in this class' constructor.
+
+                Vector3 dd = grid.GetWorldPosition(x, y) + Vector3.one * cellSize * 0.5f;
+
+                GameObject square = Instantiate(squarePrefab, dd, Quaternion.identity);
+                square.transform.localScale = new Vector3(cellSize - 0.01f, cellSize - 0.01f);
+                //square.SetActive(false);
+                goArray[x, y] = square;
+
+            }
+        }
+    }
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -37,7 +59,9 @@ public class TestManager : MonoBehaviour
         {
             Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pathfinding.GetGrid().GetGridPosition(mouseWorldPosition, out int x, out int y);
-            pathfinding.ToggleNode(x, y);
+
+            goArray[x, y].SetActive(pathfinding.ToggleNode(x, y));
+
         }
     }
 }
