@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/* Credits
-    Grid Creation & Debug - Code Monkey (Youtube)
+/* SimpleGrid that can be used for many things
+    Credits:
+    Grid Creation & Debug - Code Monkey
 */
 public class SimpleGrid<TGridObject>
 {
@@ -84,5 +85,10 @@ public class SimpleGrid<TGridObject>
     public int GetHeight()
     {
         return height;
+    }
+
+    public float GetCellSize()
+    {
+        return cellSize;
     }
 }

@@ -6,11 +6,14 @@ public class Pathfinding
 {
     private const int MOVE_STRAIGHT_COST = 10;
     private const int MOVE_DIAGONAL_COST = 14; //rounded sqrt(2)*10
+
+    public static Pathfinding Instance { get; private set; } // make class singleton
     private SimpleGrid<PathNode> grid;
     private List<PathNode> openList;
     private List<PathNode> closedList;
     public Pathfinding(int width, int height)
     {
+        Instance = this;
         //Provide a constructor for creating a pathnode for each grid node
         grid = new SimpleGrid<PathNode>(width, height, 1f, (SimpleGrid<PathNode> g, int x, int y) => new PathNode(g, x, y));
     }
@@ -23,6 +26,26 @@ public class Pathfinding
     public void ToggleNode(int x, int y)
     {
         GetNode(x, y).ToggleWalkability();
+    }
+
+    public List<Vector3> FindPath(Vector3 startWorldPosition, Vector3 endWorldPosition)
+    {
+        grid.GetGridPosition(startWorldPosition, out int startX, out int startY);
+        grid.GetGridPosition(endWorldPosition, out int endX, out int endY);
+        List<PathNode> path = FindPath(startX, startY, endX, endY);
+        if (path == null)
+        {
+            return null;
+        }
+        else
+        {
+            List<Vector3> vectorPath = new List<Vector3>();
+            foreach (PathNode pathNode in path)
+            {
+                vectorPath.Add(new Vector3(pathNode.x, pathNode.y) * grid.GetCellSize() + Vector3.one * grid.GetCellSize() * 0.5f);
+            }
+            return vectorPath;
+        }
     }
 
     public List<PathNode> FindPath(int startX, int startY, int endX, int endY)
@@ -53,7 +76,7 @@ public class Pathfinding
             if (currentNode == endNode)
             {
                 // Reached final Node
-                return CalculatePath(endNode);
+                return CalculateFinalPath(endNode);
             }
 
             openList.Remove(currentNode);
@@ -89,7 +112,7 @@ public class Pathfinding
         return null;
     }
 
-    private List<PathNode> CalculatePath(PathNode endNode)
+    private List<PathNode> CalculateFinalPath(PathNode endNode)
     {
         List<PathNode> path = new List<PathNode> { endNode };
         PathNode currentNode = endNode;
