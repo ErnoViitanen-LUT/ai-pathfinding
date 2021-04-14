@@ -5,20 +5,27 @@ using UnityEngine;
 public class TestManager : MonoBehaviour
 {
     public PlayerPathfindingHandler playerPathfindingHandler;
+    public GameObject player;
     public GameObject squarePrefab;
     private Pathfinding pathfinding;
-    private int gridx = 12;
-    private int gridy = 12;
+    public int[] gridSize;
+    public float[] borderSize;
+    private int gridx;
+    private int gridy;
     private float cellSize = 0.75f;
 
     private SimpleGrid<PathNode> grid;
     private GameObject[,] goArray;
     void Start()
     {
+        gridy = gridSize[0];
+        gridx = gridSize[1];
         pathfinding = new Pathfinding(gridx, gridy, cellSize);
         grid = pathfinding.GetGrid();
 
         goArray = new GameObject[gridx, gridy];
+
+        player.transform.position = grid.GetWorldPosition(0, 0) + Vector3.one * cellSize * 0.5f;
 
         for (int x = 0; x < goArray.GetLength(0); x++)
         {
@@ -29,7 +36,7 @@ public class TestManager : MonoBehaviour
                 Vector3 dd = grid.GetWorldPosition(x, y) + Vector3.one * cellSize * 0.5f;
 
                 GameObject square = Instantiate(squarePrefab, dd, Quaternion.identity);
-                square.transform.localScale = new Vector3(cellSize - 0.01f, cellSize - 0.01f);
+                square.transform.localScale = new Vector3(cellSize - borderSize[0], cellSize - borderSize[1]);
                 //square.SetActive(false);
                 goArray[x, y] = square;
 
