@@ -35,9 +35,9 @@ public class PlayerPathfindingHandler : MonoBehaviour
                 if (currentPathIndex >= pathVectorList.Count) StopMoving(targetPosition);
                 else
                 {
-                    // check if the way has been blocked mid-movement
+                    // check if the way has been blocked mid-movement, if so try to find another path
                     PathNode node = Pathfinding.Instance.GetNode(pathVectorList[currentPathIndex]);
-                    if (node != null && !node.isWalkable) StopMoving(targetPosition);
+                    if (node != null && !node.isWalkable) SetTargetPosition(pathVectorList[pathVectorList.Count - 1]);
                 }
             }
         }
