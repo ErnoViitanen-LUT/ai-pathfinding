@@ -31,11 +31,10 @@ public class PlayerPathfindingHandler : MonoBehaviour
             }
             else
             {
-
-                //SetTargetPosition(targetPosition);
-                //SetTargetPosition(pathVectorList[pathVectorList.Count - 1]);
                 currentPathIndex++;
-                if (currentPathIndex >= pathVectorList.Count)
+                // check if the way has been blocked mid-movement
+                PathNode node = Pathfinding.Instance.GetNode(pathVectorList[currentPathIndex]);
+                if (currentPathIndex >= pathVectorList.Count || !node.isWalkable)
                 {
                     StopMoving();
                     transform.position = targetPosition;

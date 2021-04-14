@@ -146,6 +146,11 @@ public class Pathfinding
         return neighbourList;
     }
 
+    public PathNode GetNode(Vector3 worldPosition)
+    {
+        grid.GetGridPosition(worldPosition, out int x, out int y);
+        return GetNode(x, y);
+    }
     private PathNode GetNode(int x, int y)
     {
         return grid.GetGridObject(x, y);
