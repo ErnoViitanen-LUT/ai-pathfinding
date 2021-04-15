@@ -22,7 +22,23 @@ public class TestManager : MonoBehaviour
     [System.Serializable]
     public class MapData
     {
-        public List<int> grid;
+        public Vector3 playerPos;
+        public List<GridEntry> grid;
+    }
+
+    [System.Serializable]
+    public class GridEntry
+    {
+        public int y;
+        public int x;
+        public bool w;
+
+        public GridEntry(int x, int y, bool w){
+            this.x = x;
+            this.y = y;
+            this.w = w;
+        }
+
     }
     void Start()
     {
@@ -32,7 +48,7 @@ public class TestManager : MonoBehaviour
         grid = pathfinding.GetGrid();
 
         map = new MapData();
-        map.grid = new List<int>();
+        map.grid = new List<GridEntry>();
         goArray = new GameObject[gridx, gridy];
 
         player.transform.position = grid.GetWorldPosition(0, 0) + Vector3.one * cellSize * 0.5f;
@@ -53,18 +69,11 @@ public class TestManager : MonoBehaviour
 
             }
         }
+        LoadFromJson();
     }
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            pathfinding.GetGrid().GetGridPosition(mouseWorldPosition, out int x, out int y);
-            Debug.Log("loppupiste: (" + x + "," + y + ")");
-            playerPathfindingHandler.SetTargetPosition(mouseWorldPosition);
-
-        }
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftControl))
         {
             Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pathfinding.GetGrid().GetGridPosition(mouseWorldPosition, out int x, out int y);
@@ -72,6 +81,15 @@ public class TestManager : MonoBehaviour
             goArray[x, y].SetActive(pathfinding.ToggleNode(x, y));
 
         }
+        else if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pathfinding.GetGrid().GetGridPosition(mouseWorldPosition, out int x, out int y);
+            Debug.Log("loppupiste: (" + x + "," + y + ")");
+            playerPathfindingHandler.SetTargetPosition(mouseWorldPosition);
+
+        }
+        
 
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -85,33 +103,36 @@ public class TestManager : MonoBehaviour
 
     public void LoadFromJson()
     {
-        string mapJson = System.IO.File.ReadAllText(Application.persistentDataPath + "/map.json");
+        string file = "map.json"; // Application.persistentDataPath + "/map.json"
+        string mapJson = System.IO.File.ReadAllText(file);
         map = JsonUtility.FromJson<MapData>(mapJson);
 
-
-        for (int x = 0; x < goArray.GetLength(0); x++)
+        player.transform.position = map.playerPos;
+        foreach (GridEntry gridEntry in map.grid)
         {
-            for (int y = 0; y < goArray.GetLength(1); y++)
-            {
-
-                goArray[x, y].SetActive(Convert.ToBoolean(map.grid[x + y]));
+            goArray[gridEntry.x,gridEntry.y].SetActive(gridEntry.w);
+            if(pathfinding.ToggleNode(gridEntry.x,gridEntry.y) != gridEntry.w){
+                pathfinding.ToggleNode(gridEntry.x,gridEntry.y);
             }
         }
+        
         Debug.Log("Loading... " + Application.persistentDataPath + "/map.json");
     }
     public void SaveIntoJson()
     {
-        map.grid = new List<int>();
+        map.grid = new List<GridEntry>();
+        map.playerPos = player.transform.position;
         for (int x = 0; x < goArray.GetLength(0); x++)
         {
             for (int y = 0; y < goArray.GetLength(1); y++)
             {
-                map.grid.Add(Convert.ToInt32(goArray[x, y].activeSelf));
+                map.grid.Add(new GridEntry(x,y,goArray[x, y].activeSelf));
             }
         }
 
         string mapJson = JsonUtility.ToJson(map);
-        System.IO.File.WriteAllText(Application.persistentDataPath + "/map.json", mapJson);
+        string file = "map.json"; // Application.persistentDataPath + "/map.json"
+        System.IO.File.WriteAllText(file, mapJson);
         Debug.Log("Saving... " + Application.persistentDataPath + "/map.json");
     }
 }
