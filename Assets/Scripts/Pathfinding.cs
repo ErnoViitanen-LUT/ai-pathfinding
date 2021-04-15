@@ -54,10 +54,9 @@ public class Pathfinding
         PathNode endNode = grid.GetGridObject(endX, endY);
         openList = new List<PathNode> { startNode };
         closedList = new List<PathNode>();
-
-        for (int x = 0; x < grid.GetWidth(); x++)
+        for (int x = 0; x < grid.GetGridWidth(); x++)
         {
-            for (int y = 0; y < grid.GetHeight(); y++)
+            for (int y = 0; y < grid.GetGridHeight(); y++)
             {
                 PathNode pathNode = grid.GetGridObject(x, y);
                 pathNode.gCost = int.MaxValue;
@@ -134,14 +133,14 @@ public class Pathfinding
             //if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y - 1)); // bottom-left 
             //if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.y + 1)); // upper-right 
         }
-        if (currentNode.x + 1 < grid.GetWidth())
+        if (currentNode.x + 1 < grid.GetGridWidth())
         {
             neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y)); // right
             //if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y - 1)); // bottom-right
             //if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.y + 1)); // upper-right
         }
         if (currentNode.y - 1 >= 0) neighbourList.Add(GetNode(currentNode.x, currentNode.y - 1)); // bottom
-        if (currentNode.y + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x, currentNode.y + 1)); // top
+        if (currentNode.y + 1 < grid.GetGridHeight()) neighbourList.Add(GetNode(currentNode.x, currentNode.y + 1)); // top
 
         return neighbourList;
     }

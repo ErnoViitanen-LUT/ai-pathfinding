@@ -23,7 +23,6 @@ public class PathNode
 
     public bool ToggleWalkability()
     {
-        Debug.Log("toggled" + x + "," + y);
         isWalkable = !isWalkable;
         return isWalkable;
     }

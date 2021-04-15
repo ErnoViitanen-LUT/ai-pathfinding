@@ -77,12 +77,12 @@ public class SimpleGrid<TGridObject>
         y = Mathf.FloorToInt((worldPosition.y - offset_y) / cellSize);
     }
 
-    public int GetWidth()
+    public int GetGridWidth()
     {
         return width;
     }
 
-    public int GetHeight()
+    public int GetGridHeight()
     {
         return height;
     }
