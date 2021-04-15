@@ -13,7 +13,7 @@ public class PlayerPathfindingHandler : MonoBehaviour
     void Update()
     {
         HandleMovement();
-        if (Input.GetMouseButtonDown(2)) ToggleDebugMode();
+        if (Input.GetMouseButtonDown(2) || Input.GetKeyDown(KeyCode.Space)) ToggleDebugMode();
     }
 
     private void HandleMovement()
