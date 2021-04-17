@@ -333,10 +333,14 @@ MonoBehaviour:
   playerPathfindingHandler: {fileID: 265235581}
   player: {fileID: 265235580}
   squarePrefab: {fileID: 339173249895411073, guid: d3ca1472d32154772898592521b418fb, type: 3}
+  mapJson: {fileID: 4900000, guid: c31c8919d900abe40a0f47e8be7285fa, type: 3}
   gridSize: 0c00000016000000
   borderSize:
   - 0.014
   - 0.014
+  map:
+    playerPos: {x: 0, y: 0, z: 0}
+    grid: []
 --- !u!4 &1847214538
 Transform:
   m_ObjectHideFlags: 0

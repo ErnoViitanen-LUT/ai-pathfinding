@@ -8,6 +8,7 @@ public class TestManager : MonoBehaviour
     public PlayerPathfindingHandler playerPathfindingHandler;
     public GameObject player;
     public GameObject squarePrefab;
+    public TextAsset  mapJson;
 
     private Pathfinding pathfinding;
     private SimpleGrid<PathNode> grid;
@@ -69,7 +70,7 @@ public class TestManager : MonoBehaviour
                 squareArray[x, y] = square;
             }
         }
-        LoadFromJson();
+        LoadFromMap();
     }
 
     private void Update()
@@ -118,6 +119,21 @@ public class TestManager : MonoBehaviour
         }
         Debug.Log("Loading... " + Application.persistentDataPath + "/map.json");
     }
+    public void LoadFromMap()
+    {
+        map = JsonUtility.FromJson<MapData>(mapJson.text);
+
+        player.transform.position = map.playerPos;
+        foreach (GridEntry gridEntry in map.grid)
+        {
+            squareArray[gridEntry.x, gridEntry.y].SetActive(gridEntry.w);
+            if (pathfinding.ToggleNode(gridEntry.x, gridEntry.y) != gridEntry.w)
+            {
+                pathfinding.ToggleNode(gridEntry.x, gridEntry.y);
+            }
+        }
+        Debug.Log("Loading... " + Application.persistentDataPath + "/map.json");
+    }
 
     public void SaveIntoJson()
     {
@@ -131,9 +147,9 @@ public class TestManager : MonoBehaviour
             }
         }
 
-        string mapJson = JsonUtility.ToJson(map);
+        string jsonMap = JsonUtility.ToJson(map);
         string file = "map.json"; // Application.persistentDataPath + "/map.json"
-        System.IO.File.WriteAllText(file, mapJson);
+        System.IO.File.WriteAllText(file, jsonMap);
         Debug.Log("Saving... " + Application.persistentDataPath + "/map.json");
     }
 }
