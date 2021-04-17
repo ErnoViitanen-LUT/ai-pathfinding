@@ -124,7 +124,7 @@ public class Pathfinding
         return path;
     }
 
-    private List<PathNode> GetNeighbourList(PathNode currentNode)
+    public List<PathNode> GetNeighbourList(PathNode currentNode)
     {
         List<PathNode> neighbourList = new List<PathNode>();
         if (currentNode.x - 1 >= 0)

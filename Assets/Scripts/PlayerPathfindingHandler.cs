@@ -9,6 +9,8 @@ public class PlayerPathfindingHandler : MonoBehaviour
     private List<Vector3> pathVectorList;
     private bool debugModeOn = false;
 
+    private GameObject[,] sqArray;
+
     // Update is called once per frame
     void Update()
     {
@@ -28,7 +30,12 @@ public class PlayerPathfindingHandler : MonoBehaviour
             }
             else
             {
+                PathNode currentNode = Pathfinding.Instance.GetNode(pathVectorList[currentPathIndex]);
+                DrawNeighborFCost(currentNode);
+
                 currentPathIndex++;
+
+                //Debug.Log("index" + pathVectorList[currentPathIndex].ToString());
                 if (currentPathIndex >= pathVectorList.Count) StopMoving(targetPosition);
                 else
                 {
@@ -51,27 +58,39 @@ public class PlayerPathfindingHandler : MonoBehaviour
         return transform.position;
     }
 
+    public void DrawNeighborFCost(PathNode currentPosition){
+        //Debug.Log("Draw neighbors" + currentPosition.x + ":" + currentPosition.y);
+        List<PathNode> neighbors = Pathfinding.Instance.GetNeighbourList(currentPosition);
+        foreach (PathNode node in neighbors){
+             GameObject fCostText = sqArray[node.x, node.y].transform.GetChild(0).gameObject;
+             fCostText.SetActive(true);
+        }
+    }
+
     public void SetTargetPosition(Vector3 targetPosition, GameObject[,] squareArray = null)
     {
         currentPathIndex = 0;
         pathVectorList = Pathfinding.Instance.FindPath(GetPosition(), targetPosition);
         if (squareArray != null) DrawFCost(squareArray); //for debugging f-cost to grid
+        else {
+            DrawFCost(sqArray);
+        }
         if (pathVectorList != null && pathVectorList.Count > 1)
         {
             pathVectorList.RemoveAt(0);
         }
     }
 
-    private void DrawFCost(GameObject[,] squareArray)
-    {
+    public void DrawFCost(GameObject[,] squareArray)
+    {        
         SimpleGrid<PathNode> grid = Pathfinding.Instance.GetGrid();
         for (int x = 0; x < squareArray.GetLength(0); x++)
         {
             for (int y = 0; y < squareArray.GetLength(1); y++)
             {
                 GameObject fCostText = squareArray[x, y].transform.GetChild(0).gameObject;
-                fCostText.SetActive(debugModeOn);
-                if (debugModeOn)
+                fCostText.SetActive(false);
+                if (true)
                 {
                     int fCost = grid.GetGridObject(x, y).fCost;
                     if (fCost > 1000 || fCost < 0)
@@ -86,6 +105,7 @@ public class PlayerPathfindingHandler : MonoBehaviour
 
             }
         }
+        sqArray = squareArray;
     }
 
     private void ToggleDebugMode()
