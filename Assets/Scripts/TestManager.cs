@@ -8,7 +8,7 @@ public class TestManager : MonoBehaviour
     public PlayerPathfindingHandler playerPathfindingHandler;
     public GameObject player;
     public GameObject squarePrefab;
-    public TextAsset  mapJson;
+    public TextAsset mapJson;
 
     private Pathfinding pathfinding;
     private SimpleGrid<PathNode> grid;
@@ -89,7 +89,8 @@ public class TestManager : MonoBehaviour
             Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pathfinding.GetGrid().GetGridPosition(mouseWorldPosition, out int x, out int y);
             Debug.Log("loppupiste: (" + x + "," + y + ")");
-            playerPathfindingHandler.SetTargetPosition(mouseWorldPosition, squareArray);
+            playerPathfindingHandler.SetSquareArray(squareArray);
+            playerPathfindingHandler.SetTargetPosition(mouseWorldPosition);
         }
 
         if (Input.GetKeyDown(KeyCode.S))

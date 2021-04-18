@@ -11,6 +11,7 @@ public class Pathfinding
     private SimpleGrid<PathNode> grid;
     private List<PathNode> openList;
     private List<PathNode> closedList;
+    public List<PathNode> drawList;
     public Pathfinding(int width, int height, float cellSize)
     {
         Instance = this;
@@ -55,6 +56,7 @@ public class Pathfinding
         if (endNode == null || !endNode.isWalkable) return null;
 
         openList = new List<PathNode> { startNode };
+        drawList = new List<PathNode> { startNode };
         closedList = new List<PathNode>();
         for (int x = 0; x < grid.GetGridWidth(); x++)
         {
@@ -104,6 +106,7 @@ public class Pathfinding
                     if (!openList.Contains(neighbourNode))
                     {
                         openList.Add(neighbourNode);
+                        drawList.Add(neighbourNode);
                     }
                 }
             }
