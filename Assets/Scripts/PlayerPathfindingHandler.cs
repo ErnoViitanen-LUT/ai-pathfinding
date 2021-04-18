@@ -12,7 +12,7 @@ public class PlayerPathfindingHandler : MonoBehaviour
     private List<Vector3> pathVectorList;
     private bool halted = true;
     private List<PathNode> nodeList;
-    private bool debugModeOn = true;
+    private bool debugModeOn = false;
 
     private GameObject[,] squareArray;
     public Color pathColor = Color.green;
@@ -38,8 +38,12 @@ public class PlayerPathfindingHandler : MonoBehaviour
                 if (calc >= 1f || calcDrawOverride)
                 {
                     var item = nodeList[0];
-                    GameObject go = squareArray[item.x, item.y].transform.GetChild(0).gameObject;
-                    go.SetActive(true);
+                    GameObject TextF = squareArray[item.x, item.y].transform.GetChild(0).gameObject;
+                    GameObject TextGH = squareArray[item.x, item.y].transform.GetChild(1).gameObject;
+                    TextMesh meshF = TextF.GetComponent<TextMesh>();
+                    TextMesh meshGH = TextGH.GetComponent<TextMesh>();
+                    TextF.SetActive(true);
+                    TextGH.SetActive(debugModeOn);
                     nodeList.RemoveAt(0);
                     calc = 0;
                 }
@@ -47,11 +51,14 @@ public class PlayerPathfindingHandler : MonoBehaviour
             else
             {
                 var item = Pathfinding.Instance.GetNode(targetPosition);
-                GameObject go = squareArray[item.x, item.y].transform.GetChild(0).gameObject;
-                go.SetActive(true);
-                go.GetComponent<TextMesh>().color = Color.red;
-                calcDrawOverride = false;
-                halted = false;
+                if (item != null)
+                {
+                    GameObject go = squareArray[item.x, item.y].transform.GetChild(0).gameObject;
+                    go.SetActive(true);
+                    go.GetComponent<TextMesh>().color = Color.red;
+                    calcDrawOverride = false;
+                    halted = false;
+                }
             }
         }
 
@@ -114,7 +121,6 @@ public class PlayerPathfindingHandler : MonoBehaviour
     {
         currentPathIndex = 0;
 
-        debugModeOn = true;
         halted = true; // for drawing calculated path before actual movement
         pathVectorList = Pathfinding.Instance.FindPath(GetPosition(), targetPosition);
         DrawFCost(); //for debugging f-cost to grid
@@ -135,24 +141,34 @@ public class PlayerPathfindingHandler : MonoBehaviour
     public void DrawFCost()
     {
         SimpleGrid<PathNode> grid = Pathfinding.Instance.GetGrid();
-        for (int x = 0; x < squareArray.GetLength(0); x++)
+        for (int x = 0; x < grid.GetGridWidth(); x++)
         {
-            for (int y = 0; y < squareArray.GetLength(1); y++)
+            for (int y = 0; y < grid.GetGridHeight(); y++)
             {
                 squareArray[x, y].GetComponent<SpriteRenderer>().color = Color.white;
-                GameObject fCostText = squareArray[x, y].transform.GetChild(0).gameObject;
-                fCostText.GetComponent<TextMesh>().color = calcColor;
-                fCostText.SetActive(false);
+                GameObject TextF = squareArray[x, y].transform.GetChild(0).gameObject;
+                GameObject TextGH = squareArray[x, y].transform.GetChild(1).gameObject;
+                TextMesh meshF = TextF.GetComponent<TextMesh>();
+                TextMesh meshGH = TextGH.GetComponent<TextMesh>();
+                meshF.color = calcColor;
+                meshF.fontStyle = FontStyle.Normal;
+                TextF.SetActive(false);
+                TextGH.SetActive(false);
                 if (true)
                 {
                     int fCost = grid.GetGridObject(x, y).fCost;
+                    int hCost = grid.GetGridObject(x, y).hCost;
+                    int gCost = grid.GetGridObject(x, y).gCost;
+
                     if (fCost > 1000 || fCost < 0)
                     {
-                        fCostText.GetComponent<TextMesh>().text = "";
+                        meshF.text = "";
+                        meshGH.text = "";
                     }
                     else
                     {
-                        fCostText.GetComponent<TextMesh>().text = (fCost / 10f).ToString();
+                        meshF.text = (fCost / 10f).ToString();
+                        meshGH.text = "g(" + (gCost / 10f).ToString() + ") h(" + (hCost / 10f).ToString() + ")";
                     }
 
                 }
@@ -164,15 +180,16 @@ public class PlayerPathfindingHandler : MonoBehaviour
     private void ToggleDebugMode()
     {
         if (halted) calcDrawOverride = true;
-        else
+        if (true)
         {
             debugModeOn = !debugModeOn;
             for (int x = 0; x < squareArray.GetLength(0); x++)
             {
                 for (int y = 0; y < squareArray.GetLength(1); y++)
                 {
-                    GameObject fCostText = squareArray[x, y].transform.GetChild(0).gameObject;
-                    fCostText.SetActive(debugModeOn);
+                    GameObject TextF = squareArray[x, y].transform.GetChild(0).gameObject;
+                    GameObject TextGH = squareArray[x, y].transform.GetChild(1).gameObject;
+                    TextGH.SetActive(debugModeOn);
                 }
             }
         }
