@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8498d9a22d0905f4fbe30d816147fe80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pathColor: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
 --- !u!212 &265235582
 SpriteRenderer:
   m_ObjectHideFlags: 0
